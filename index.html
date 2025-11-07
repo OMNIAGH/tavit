@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAVIT - Plataforma de Inteligencia Artificial Predictiva para Seguros</title>
+    <meta name="description" content="TAVIT utiliza Inteligencia Artificial avanzada y modelos CatBoost para predecir fraudes y evaluar riesgos con análisis OSINT de 25+ fuentes en tiempo real.">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --tavit-blue-primary: #0A3B8D;
+            --tavit-blue-secondary: #001FFF;
+            --tavit-cyan-accent: #01DFFF;
+            --tavit-dark-grey: #2C3E90;
+            --tavit-bg-dark: #0B1118;
+            --tavit-surface-1: #0E1722;
+            --tavit-surface-2: #121B28;
+            --tavit-text-primary: #e4e4e7;
+            --tavit-text-secondary: #a1a1aa;
+            --tavit-white: #FFFFFF;
+            --tavit-success: #22c55e;
+            --tavit-warning: #f59e0b;
+            --tavit-error: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--tavit-bg-dark);
+            color: var(--tavit-text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header and Navigation */
+        header {
+            background: linear-gradient(135deg, var(--tavit-blue-primary) 0%, var(--tavit-dark-grey) 100%);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--tavit-cyan-accent);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--tavit-white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--tavit-blue-primary), var(--tavit-cyan-accent));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--tavit-white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--tavit-cyan-accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--tavit-blue-primary) 0%, var(--tavit-dark-grey) 50%, #0B1118 100%);
+            padding: 6rem 2rem;
+            text-align: center;
+            border-bottom: 3px solid var(--tavit-cyan-accent);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--tavit-white);
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--tavit-text-secondary);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--tavit-cyan-accent), var(--tavit-blue-secondary));
+            color: var(--tavit-white);
+            padding: 1rem 2.5rem;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(1, 223, 255, 0.4);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 6rem;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--tavit-white);
+            text-align: center;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--tavit-text-secondary);
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+
+        /* Service Cards */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: var(--tavit-surface-1);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid var(--tavit-dark-grey);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--tavit-cyan-accent);
+        }
+
+        .service-card h3 {
+            font-size: 24px;
+            color: var(--tavit-cyan-accent);
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: var(--tavit-text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .service-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .service-card li {
+            color: var(--tavit-text-primary);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .service-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--tavit-success);
+            font-weight: 700;
+        }
+
+        /* Premium Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(145deg, var(--tavit-surface-1), var(--tavit-surface-2));
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--tavit-blue-primary);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card.premium {
+            border: 2px solid var(--tavit-cyan-accent);
+            box-shadow: 0 4px 20px rgba(1, 223, 255, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(1, 223, 255, 0.2);
+            border-color: var(--tavit-cyan-accent);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            filter: grayscale(100%) brightness(1.2);
+        }
+
+        .feature-card h3 {
+            color: var(--tavit-white);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--tavit-text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial-card {
+            background: var(--tavit-surface-2);
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--tavit-cyan-accent);
+        }
+
+        .testimonial-quote {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--tavit-text-primary);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--tavit-cyan-accent);
+        }
+
+        .testimonial-role {
+            font-size: 14px;
+            color: var(--tavit-text-secondary);
+        }
+
+        /* API Demo Section */
+        .api-demo {
+            background: var(--tavit-surface-1);
+            padding: 3rem;
+            border-radius: 12px;
+            margin-top: 3rem;
+        }
+
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .api-card {
+            background: var(--tavit-surface-2);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--tavit-dark-grey);
+            text-align: center;
+        }
+
+        .api-card h4 {
+            color: var(--tavit-cyan-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .api-card p {
+            font-size: 14px;
+            color: var(--tavit-text-secondary);
+        }
+
+        /* Contact Form */
+        .contact-form {
+            max-width: 600px;
+            margin: 3rem auto;
+            background: var(--tavit-surface-1);
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--tavit-text-primary);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--tavit-surface-2);
+            border: 1px solid var(--tavit-dark-grey);
+            border-radius: 6px;
+            color: var(--tavit-text-primary);
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--tavit-cyan-accent);
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--tavit-dark-grey) 0%, var(--tavit-blue-primary) 100%);
+            padding: 3rem 2rem;
+            margin-top: 6rem;
+            border-top: 2px solid var(--tavit-cyan-accent);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: var(--tavit-cyan-accent);
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: var(--tavit-text-secondary);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--tavit-cyan-accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .services-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--tavit-surface-1);
+            border-radius: 12px;
+            border: 2px solid var(--tavit-dark-grey);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--tavit-cyan-accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--tavit-text-secondary);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="#" class="logo">
+                <div class="logo-icon">T</div>
+                TAVIT
+            </a>
+            <ul>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#testimonios">Testimonios</a></li>
+                <li><a href="#apis">APIs</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li><a href="/login" style="background: linear-gradient(135deg, #01DFFF, #0A3B8D); padding: 0.5rem 1rem; border-radius: 6px; color: white; text-decoration: none;">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Plataforma de IA Predictiva para Detección de Fraudes y Análisis de Riesgo</h1>
+        <p>Utiliza modelos de Inteligencia Artificial CatBoost y análisis OSINT de 25+ fuentes para predicciones en tiempo real. Monitoreo automático, alertas inteligentes y dashboard corporativo para decisiones basadas en datos.</p>
+        <a href="#contacto" class="cta-button">Solicitar Demo Gratuita</a>
+    </section>
+
+    <div class="container">
+        <!-- Estadísticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">85%</div>
+                <div class="stat-label">Reducción de Fraude</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2M€</div>
+                <div class="stat-label">Ahorro Anual Promedio</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2 min</div>
+                <div class="stat-label">Verificación de Cliente</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">20+</div>
+                <div class="stat-label">Fuentes de Datos OSINT</div>
+            </div>
+        </div>
+
+        <!-- Servicios -->
+        <section id="servicios" class="section">
+            <h2 class="section-title">Cómo TAVIT Protege Tu Negocio</h2>
+            <p class="section-subtitle">Soluciones empresariales diseñadas para aseguradoras que buscan reducir fraude y optimizar decisiones.</p>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Prevención de Fraude</h3>
+                    <p>Detecta fraudes antes de que ocurran con nuestro sistema de análisis inteligente.</p>
+                    <ul>
+                        <li>Identificación de patrones sospechosos en segundos</li>
+                        <li>Reducción de fraudes hasta en un 85%</li>
+                        <li>Análisis de redes y conexiones ocultas</li>
+                        <li>Alertas en tiempo real</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <h3>Verificación de Clientes</h3>
+                    <p>Verifica si tus clientes son viables antes de emitir pólizas.</p>
+                    <ul>
+                        <li>Análisis completo de riesgo en tiempo real</li>
+                        <li>Verificación de identidad y antecedentes</li>
+                        <li>Evita pólizas costosas con clientes de alto riesgo</li>
+                        <li>Integración con 20+ bases de datos públicas</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <h3>Ahorro de Costos</h3>
+                    <p>Ahorra millones en decisiones incorrectas y procesos ineficientes.</p>
+                    <ul>
+                        <li>Reducción de tiempo de revisión de días a minutos</li>
+                        <li>ROI inmediato en los primeros meses</li>
+                        <li>Automatización de procesos manuales</li>
+                        <li>Reportes auditables y trazables</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Capacidades Premium Enterprise -->
+        <section id="premium" class="section">
+            <h2 class="section-title">Capacidades Premium Enterprise</h2>
+            <p class="section-subtitle">Funcionalidades avanzadas para empresas Fortune 500 con requisitos de seguridad y escala empresarial.</p>
+            
+            <div class="features-grid">
+                <div class="feature-card premium">
+                    <div class="feature-icon">🤖</div>
+                    <h3>IA Predictiva Avanzada</h3>
+                    <p>Modelos CatBoost entrenados para detección de fraude y scoring de riesgo con 89% de precisión. Predicciones en tiempo real con confianza superior al 85%.</p>
+                </div>
+                
+                <div class="feature-card premium">
+                    <div class="feature-icon">🔍</div>
+                    <h3>OSINT Multi-Fuente</h3>
+                    <p>Análisis de 25+ fuentes simultáneas: CourtListener, PACER, VINELink, registros empresariales, redes sociales, patentes USPTO y más.</p>
+                </div>
+                
+                <div class="feature-card premium">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Monitoreo Automático</h3>
+                    <p>Seguimiento en tiempo real de personas y entidades con alertas automáticas por email, webhook y SMS ante cambios de estado.</p>
+                </div>
+                
+                <div class="feature-card premium">
+                    <div class="feature-icon">📊</div>
+                    <h3>Dashboard Corporativo</h3>
+                    <p>Panel ejecutivo con métricas avanzadas, gestión de casos, reportes automatizados y API enterprise para integración con sistemas existentes.</p>
+                </div>
+                
+                <div class="feature-card premium">
+                    <div class="feature-icon">🔔</div>
+                    <h3>Sistema de Alertas</h3>
+                    <p>Notificaciones inteligentes conectadas a sistemas de justicia (tribunales federales, estatales, prisiones) con escalación automática por severidad.</p>
+                </div>
+                
+                <div class="feature-card premium">
+                    <div class="feature-icon">💬</div>
+                    <h3>Chat con IA</h3>
+                    <p>Asistente inteligente powered by OpenAI para consultas complejas, análisis de casos y recomendaciones basadas en machine learning.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonios -->
+        <section id="testimonios" class="section">
+            <h2 class="section-title">Lo Que Dicen Nuestros Clientes</h2>
+            <p class="section-subtitle">Resultados reales de empresas que confían en TAVIT para proteger su negocio.</p>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">"Antes pagábamos 2M€ anuales en fraudes. Con TAVIT detectamos el 85% de casos sospechosos antes de emitir pólizas. Ahora revisamos solicitudes en 2 minutos en vez de 2 días."</p>
+                    <div class="testimonial-author">María González</div>
+                    <div class="testimonial-role">Directora de Riesgos en Seguros Monterrey</div>
+                </div>
+
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">"Teníamos 30% de siniestros fraudulentos. TAVIT redujo esto a 5% en seis meses. El retorno fue inmediato."</p>
+                    <div class="testimonial-author">Carlos Ruiz</div>
+                    <div class="testimonial-role">CFO de MedicoVida</div>
+                </div>
+
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">"TAVIT nos ayudó a cumplir regulaciones mientras agilizamos procesos. Nuestros auditores quedaron impresionados con la trazabilidad."</p>
+                    <div class="testimonial-author">Ana Martínez</div>
+                    <div class="testimonial-role">Gerente de Cumplimiento en AseguraPlus</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- APIs -->
+        <section id="apis" class="section">
+            <h2 class="section-title">Tecnología OSINT Avanzada</h2>
+            <p class="section-subtitle">APIs robustas y documentadas para integración empresarial.</p>
+            
+            <div class="api-demo">
+                <h3 style="color: var(--tavit-cyan-accent); text-align: center; margin-bottom: 2rem;">Endpoints Disponibles</h3>
+                <div class="api-grid">
+                    <div class="api-card">
+                        <h4>/api/v1/fraud-check</h4>
+                        <p>Detección de patrones fraudulentos mediante análisis de datos públicos</p>
+                    </div>
+                    <div class="api-card">
+                        <h4>/api/v1/risk-score</h4>
+                        <p>Cálculo de scores de riesgo basado en múltiples fuentes</p>
+                    </div>
+                    <div class="api-card">
+                        <h4>/api/v1/compliance-verify</h4>
+                        <p>Verificación regulatoria y cumplimiento legal</p>
+                    </div>
+                    <div class="api-card">
+                        <h4>/api/v1/data-crawler</h4>
+                        <p>Recolección de datos OSINT de 20+ fuentes públicas</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <p style="color: var(--tavit-text-secondary);">Integración con SerpAPI, CourtListener, bases de datos públicas y más</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contacto -->
+        <section id="contacto" class="section">
+            <h2 class="section-title">Solicita Tu Auditoría Gratuita de Riesgo</h2>
+            <p class="section-subtitle">Descubre cuánto puedes ahorrar con TAVIT. Sin compromiso.</p>
+            
+            <form class="contact-form" onsubmit="return handleContactSubmit(event)">
+                <div class="form-group">
+                    <label for="empresa">Nombre de la Empresa</label>
+                    <input type="text" id="empresa" name="empresa" required>
+                </div>
+                <div class="form-group">
+                    <label for="tipo-seguro">Tipo de Seguro</label>
+                    <select id="tipo-seguro" name="tipo-seguro" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="salud">Seguro de Salud</option>
+                        <option value="auto">Seguro de Auto</option>
+                        <option value="vida">Seguro de Vida</option>
+                        <option value="propiedad">Seguro de Propiedad</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="volumen">Volumen Anual Aproximado</label>
+                    <input type="text" id="volumen" name="volumen" placeholder="Ej: 500 pólizas/año">
+                </div>
+                <div class="form-group">
+                    <label for="preocupacion">Principal Preocupación</label>
+                    <textarea id="preocupacion" name="preocupacion" rows="4" placeholder="¿Qué problema principal buscas resolver?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email de Contacto</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <button type="submit" class="cta-button" style="width: 100%;">Solicitar Auditoría Gratuita</button>
+            </form>
+        </section>
+
+        <!-- Sobre Nosotros -->
+        <section class="section">
+            <h2 class="section-title">Sobre TAVIT</h2>
+            <p class="section-subtitle">Ayudamos a aseguradoras a detectar fraude con datos públicos.</p>
+            
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <p style="font-size: 18px; color: var(--tavit-text-primary); margin-bottom: 2rem;">
+                    TAVIT es el único sistema que cubre desde investigación OSINT hasta reporte final, 
+                    integrando 20+ fuentes de datos públicas para verificación de clientes y prevención de fraude.
+                </p>
+                <p style="color: var(--tavit-text-secondary); margin-bottom: 1rem;">
+                    Nuestro equipo de especialistas en data mining y compliance trabaja con las aseguradoras 
+                    más importantes para reducir fraude y optimizar decisiones.
+                </p>
+                <p style="color: var(--tavit-text-secondary);">
+                    Cumplimiento GDPR | ISO 27001 | Auditoría Completa | Trazabilidad Total
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>TAVIT</h3>
+                <p>Sistema de análisis de datos y prevención de fraude para aseguradoras.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <p>Alfredo Escalona (CEO)</p>
+                <p>ceo@tavit.com</p>
+                <p>+1 (305) 972-2042</p>
+                <p>530 Tamiami Vld, Miami FL, 33175</p>
+            </div>
+            <div class="footer-section">
+                <h3>Servicios</h3>
+                <a href="#servicios">Prevención de Fraude</a>
+                <a href="#servicios">Verificación de Clientes</a>
+                <a href="#servicios">Ahorro de Costos</a>
+                <a href="#apis">APIs OSINT</a>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <p>Cumplimiento GDPR</p>
+                <p>Política de Privacidad</p>
+                <p>Términos de Servicio</p>
+                <p>ISO 27001 Certified</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--tavit-dark-grey); color: var(--tavit-text-secondary);">
+            <p>&copy; 2025 TAVIT. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        function handleContactSubmit(event) {
+            event.preventDefault();
+            alert('Gracias por tu interés en TAVIT. Un representante se pondrá en contacto contigo en menos de 24 horas.');
+            event.target.reset();
+            return false;
+        }
+
+        // Smooth scrolling para links de navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

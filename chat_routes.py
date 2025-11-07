@@ -16,7 +16,7 @@ load_dotenv()
 
 router = APIRouter(prefix="/api/v1", tags=["Chat"])
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "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")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "*************************************")
 OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
 
 # System prompt por defecto
